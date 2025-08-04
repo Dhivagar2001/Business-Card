@@ -7,7 +7,37 @@
     <style>
         body {
             background: #f4f4f4;
-            background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80');
+            /* VIBE coding themed Unsplash image (default) */
+            background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80');
+        /* Background image selector styles */
+        .bg-selector {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            position: fixed;
+            left: 18px;
+            bottom: 18px;
+            z-index: 2000;
+            background: rgba(255,255,255,0.92);
+            padding: 8px 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px #0002;
+            max-width: unset;
+            margin: 0;
+        }
+        .bg-thumb {
+            width: 60px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 2px solid #ccc;
+            cursor: pointer;
+            transition: border 0.2s;
+        }
+        .bg-thumb.selected {
+            border: 2.5px solid #0078d4;
+            box-shadow: 0 2px 8px #0078d422;
+        }
             background-repeat: no-repeat;
             background-position: center center;
             background-attachment: fixed;
@@ -87,8 +117,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
+    <!-- Background selector -->
+    <div class="bg-selector" id="bgSelector">
+        <!-- Thumbnails will be injected here -->
+    </div>
     <div class="business-card">
-        <img class="avatar" id="avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile Photo">
+        <img class="avatar" id="avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dhivagar" alt="Profile Photo">
         <div class="name" id="cardName">Dhivagar</div>
         <div class="title" id="cardTitle">Quality Assurance</div>
         <div class="contact-info" id="cardContact">
@@ -115,12 +149,52 @@
         <label>GitHub URL:<br><input type="text" id="inputGithub" value="" style="width:100%;margin-bottom:8px;"></label><br>
         <button type="submit" style="margin-top:8px; background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer;">Update</button>
         <button type="button" id="downloadCardBtn" style="margin-top:8px; background:#222; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Download Card</button>
-    </form>
+    <button type="button" id="addCardBtn" style="margin-top:8px; background:#28a745; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Add</button>
+
+    <button type="button" id="gotoTableBtn" style="margin-top:8px; background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Card Details</button>
+
+    <script>
+    // 5 unique Unsplash backgrounds (coding, tech, abstract, vibe)
+    const bgImages = [
+        'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80', // Coding VIBE (default)
+        'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80', // Laptop workspace
+        'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=1200&q=80', // Code on screen
+        'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80', // Coffee + code
+        'https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1200&q=80', // Abstract blue
+    ];
+
+    // Render thumbnails
+    const bgSelector = document.getElementById('bgSelector');
+    bgImages.forEach((url, idx) => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.className = 'bg-thumb' + (idx === 0 ? ' selected' : '');
+        img.title = 'Background ' + (idx + 1);
+        img.onclick = function() {
+            document.body.style.backgroundImage = `url('${url}')`;
+            // Remove selected from all
+            document.querySelectorAll('.bg-thumb').forEach(t => t.classList.remove('selected'));
+            img.classList.add('selected');
+        };
+        bgSelector.appendChild(img);
+    });
+    // Ensure clicking the button shows the table page
+    document.getElementById('gotoTableBtn').addEventListener('click', function() {
+        showTablePage();
+    });
+    </script>
+
+
+    <div style="display:flex; justify-content:flex-start; align-items:center; max-width:350px; width:100%; margin:0 auto 8px auto; gap:6px;">
+        <span id="resumeStatus" style="display:block; margin-top:4px; font-size:0.82rem; color:#222; background:#fff; padding:2px 8px; border-radius:4px; box-shadow:0 1px 3px #0001; width:max-content; min-width:80px; max-width:320px;"></span>
+        <button id="removeResumeBtn" type="button" title="Remove Resume" style="display:none; margin-top:4px; background:#e53935; color:#fff; border:none; border-radius:50%; width:22px; height:22px; font-size:1rem; line-height:1; cursor:pointer; padding:0;">&times;</button>
     </div>
 
+    </form>
+
     <!-- Table Page (hidden by default) -->
-    <div id="tablePage" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; background:rgba(255,255,255,0.97); position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1000;">
-        <h2 style="margin-top:2rem;">Submitted Business Cards</h2>
+    <div id="tablePage" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; background: url('https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1200&q=80') center center / cover no-repeat, rgba(255,255,255,0.93); position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1000;">
+        <h2 style="margin-top:2rem; color:#fff; font-weight:bold; text-shadow:0 2px 8px #0007;">Card Details</h2>
         <table id="cardsTable" style="border-collapse:collapse; min-width:320px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); border-radius:10px; overflow:hidden;">
             <thead style="background:#0078d4; color:#fff;">
                 <tr>
@@ -133,6 +207,7 @@
                     <th style="padding:8px 12px;">Twitter</th>
                     <th style="padding:8px 12px;">GitHub</th>
                     <th style="padding:8px 12px;">Resume</th>
+                    <th style="padding:8px 12px;">Delete</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -140,8 +215,7 @@
         <button id="backBtn" style="margin-top:2rem; background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer;">Back</button>
     </div>
     <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" style="display:none;">
-    <span id="resumeStatus" style="display:block; margin-top:8px; font-size:0.95rem; color:#0078d4;"></span>
-    <button type="button" id="continueBtn" style="margin-top:8px; background:#28a745; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Continue</button>
+    <!-- <button type="button" id="continueBtn" style="margin-top:8px; background:#28a745; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Continue</button> -->
     <button type="button" id="resumeBtn" style="margin-top:8px; background:#ffc107; color:#222; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Upload Resume</button>
     <script>
     document.getElementById('updateForm').addEventListener('submit', function(e) {
@@ -209,16 +283,28 @@
     document.getElementById('resumeInput').addEventListener('change', function(e) {
         var file = e.target.files[0];
         var status = document.getElementById('resumeStatus');
+        var removeBtn = document.getElementById('removeResumeBtn');
         if (file) {
             status.textContent = 'Resume uploaded: ' + file.name;
             status.style.color = '#28a745';
+            removeBtn.style.display = '';
         } else {
             status.textContent = '';
+            removeBtn.style.display = 'none';
         }
     });
 
-    // Continue button logic
-    document.getElementById('continueBtn').addEventListener('click', function() {
+    // Remove Resume button logic
+    document.getElementById('removeResumeBtn').addEventListener('click', function() {
+        var resumeInput = document.getElementById('resumeInput');
+        var status = document.getElementById('resumeStatus');
+        resumeInput.value = '';
+        status.textContent = '';
+        this.style.display = 'none';
+    });
+
+    // Add button logic (replaces Continue)
+    document.getElementById('addCardBtn').addEventListener('click', function() {
         // Gather all displayed business card details (from the card, not the form)
         var name = document.getElementById('cardName').textContent;
         var title = document.getElementById('cardTitle').textContent;
@@ -251,7 +337,7 @@
         // Populate table
         var tbody = document.querySelector('#cardsTable tbody');
         tbody.innerHTML = '';
-        submittedCards.forEach(function(card) {
+        submittedCards.forEach(function(card, idx) {
             var tr = document.createElement('tr');
             tr.innerHTML =
                 '<td style="padding:6px 10px; border-bottom:1px solid #eee;">' + card.name + '</td>' +
@@ -264,8 +350,17 @@
                 '<td style="padding:6px 10px; border-bottom:1px solid #eee;"><a href="' + card.github + '" target="_blank">GitHub</a></td>' +
                 '<td style="padding:6px 10px; border-bottom:1px solid #eee;">' +
                     (card.resumeUrl ? '<a href="' + card.resumeUrl + '" download="' + card.resumeName + '" style="color:#0078d4; text-decoration:underline;">Download</a>' : '<span style="color:#aaa;">No Resume</span>') +
-                '</td>';
+                '</td>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #eee;"><button class="deleteRowBtn" data-idx="' + idx + '" style="background:#e53935; color:#fff; border:none; border-radius:4px; padding:4px 10px; cursor:pointer;">Delete</button></td>';
             tbody.appendChild(tr);
+        });
+        // Add delete button listeners
+        Array.from(document.getElementsByClassName('deleteRowBtn')).forEach(function(btn) {
+            btn.onclick = function() {
+                var idx = parseInt(this.getAttribute('data-idx'));
+                submittedCards.splice(idx, 1);
+                showTablePage();
+            };
         });
     }
 
