@@ -159,10 +159,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
-    <!-- Background selector -->
-    <div class="bg-selector" id="bgSelector">
-        <!-- Thumbnails will be injected here -->
+    <!-- Background selector (left side, always visible) -->
+    <div class="bg-selector" id="bgSelector" style="left:18px; bottom:18px; top:auto; right:auto; position:fixed;">
+        <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80" class="bg-thumb selected" title="Background 1">
+        <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80" class="bg-thumb" title="Background 2">
+        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=1200&q=80" class="bg-thumb" title="Background 3">
+        <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80" class="bg-thumb" title="Background 4">
+        <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1200&q=80" class="bg-thumb" title="Background 5">
     </div>
+    <!-- Smart Business Card Banner for 1st background (text only, left-aligned) -->
+    <!-- NOTE BUTTON (top right) -->
+    <button id="noteBtn" title="How to use & Benefits" style="position:fixed; top:22px; right:22px; z-index:2200; background:#fffbe7; color:#ff9800; border:none; border-radius:50px; padding:0.3rem 1.1rem; font-size:0.92rem; font-weight:500; box-shadow:0 2px 8px #0002; cursor:pointer; display:block;">How this Works</button>
+    <!-- NOTE POPUP -->
+    <div id="notePopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); z-index:3200; align-items:center; justify-content:center;">
+      <div style="background:#fffbe7; border-radius:14px; box-shadow:0 4px 32px #0005; min-width:320px; max-width:95vw; padding:2rem 1.5rem 1.5rem 1.5rem; position:relative; border:3px solid #ff9800; text-align:left; color:#222;">
+        <button id="closeNotePopup" style="position:absolute; top:10px; right:14px; background:none; border:none; color:#ff9800; font-size:1.5rem; cursor:pointer;">&times;</button>
+        <h3 style="margin-top:0; color:#ff9800;">How to Use Your Smart Business Card</h3>
+        <ul style="margin-bottom:1.2rem; padding-left:1.2em;">
+          <li>Fill in your details and upload an avatar to create your personalized business card.</li>
+          <li>Upload your resume for quick sharing and download.</li>
+          <li>Download your business card as a JPEG image for sharing or printing.</li>
+          <li>Click <b>Card Details</b> to view, manage, and delete your submitted cards.</li>
+          <li>Use the <b>Job Openings</b> button to explore jobs and check your eligibility instantly.</li>
+          <li>Upload your Smart Card to apply for jobs and download job details as a PDF.</li>
+        </ul>
+        <h3 style="margin-bottom:0.5em; color:#ff9800;">Benefits</h3>
+        <ul style="padding-left:1.2em;">
+          <li>Modern, digital business card for easy sharing and networking.</li>
+          <li>Instant job eligibility check based on your skills and experience.</li>
+          <li>Quick resume sharing and download links for recruiters.</li>
+          <li>Downloadable job details for your records.</li>
+          <li>Mobile-friendly and easy to update anytime.</li>
+        </ul>
+      </div>
+    </div>
+    <div id="smartBanner" style="display:none; position:fixed; top:22px; left:22px; z-index:1200; background:none; color:#e3f0fa; font-size:1.5rem; font-weight:700; letter-spacing:1.2px; padding:0; border:none; box-shadow:1px 2px 8px #0078d422; text-align:left; pointer-events:none; user-select:none; text-shadow: 1px 2px 8px #0078d433; opacity:0.85;">Smart Business Card</div>
+    <!-- Job Openings Button -->
+    <button id="jobOpeningsBtn" style="position:fixed; bottom:18px; right:18px; z-index:2100; background:#ff5722; color:#fff; border:none; border-radius:50px; padding:0.7rem 1.6rem; font-size:1rem; font-weight:600; box-shadow:0 2px 8px #0002; cursor:pointer;">Job Openings</button>
     <div class="business-card">
         <img class="avatar" id="avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dhivagar" alt="Profile Photo">
         <div class="name" id="cardName">Dhivagar</div>
@@ -172,6 +205,9 @@
             7023982472<br>
             Podnicherry, India
         </div>
+        <div class="experience" id="cardExperience" style="margin: 0.5rem 0; color: #222; font-weight: 500;">Experience: 3 years</div>
+        <div class="skillset" id="cardSkillset" style="margin: 0.5rem 0; color: #0078d4; font-weight: 500;">Skillset: JavaScript, Cypress</div>
+        <div class="resume-link" id="cardResume" style="margin: 0.5rem 0; color: #0078d4; font-weight: 500; display:none;"></div>
         <div class="socials">
             <a href="#" id="linkedin" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
             <a href="#" id="twitter" title="Twitter"><i class="fab fa-twitter"></i></a>
@@ -185,17 +221,48 @@
         <label>Email:<br><input type="email" id="inputEmail" value="" style="width:100%;margin-bottom:8px;"></label><br>
         <label>Phone:<br><input type="text" id="inputPhone" value="" style="width:100%;margin-bottom:8px;"></label><br>
         <label>Location:<br><input type="text" id="inputLocation" value="" style="width:100%;margin-bottom:8px;"></label><br>
+        <label>Experience:<br><input type="text" id="inputExperience" value="" placeholder="e.g. 3 years" style="width:100%;margin-bottom:8px;"></label><br>
+        <label>Skillset:<br><input type="text" id="inputSkillset" value="" placeholder="e.g. JavaScript, Cypress" style="width:100%;margin-bottom:8px;"></label><br>
         <label>Avatar Upload:<br><input type="file" id="inputAvatar" accept="image/*" style="width:100%;margin-bottom:8px;"></label><br>
         <label>LinkedIn URL:<br><input type="text" id="inputLinkedin" value="" style="width:100%;margin-bottom:8px;"></label><br>
         <label>Twitter URL:<br><input type="text" id="inputTwitter" value="" style="width:100%;margin-bottom:8px;"></label><br>
         <label>GitHub URL:<br><input type="text" id="inputGithub" value="" style="width:100%;margin-bottom:8px;"></label><br>
-        <button type="submit" style="margin-top:8px; background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer;">Update</button>
-        <button type="button" id="downloadCardBtn" style="margin-top:8px; background:#222; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Download Card</button>
-    <button type="button" id="addCardBtn" style="margin-top:8px; background:#28a745; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Add</button>
 
-    <button type="button" id="gotoTableBtn" style="margin-top:8px; background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Card Details</button>
 
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; align-items: center; margin-top: 12px; width: 100%;">
+            <button type="submit" style="background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Update</button>
+            <button type="button" id="downloadCardBtn" style="background:#222; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Download Card</button>
+            <button type="button" id="resumeBtn" style="background:#ffc107; color:#222; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Upload Resume</button>
+            <button type="button" id="addCardBtn" style="background:#28a745; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Add</button>
+        </div>
+        <div style="display:flex; justify-content:center; align-items:center; width:100%; margin-top:10px;">
+            <button type="button" id="gotoTableBtn" style="background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Card Details</button>
+        </div>
+
+    <!-- POPUP DIALOGS -->
+    <div id="jobPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); z-index:3000; align-items:center; justify-content:center;">
+        <div id="jobPopupBox" style="background:#fff; border-radius:12px; box-shadow:0 4px 32px #0005; min-width:320px; max-width:90vw; padding:2rem 1.5rem 1.5rem 1.5rem; position:relative; border:4px solid #0078d4; text-align:center;">
+            <button id="closeJobPopup" style="position:absolute; top:10px; right:14px; background:none; border:none; color:#888; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <div id="jobPopupMsg" style="font-size:1.15rem; margin-bottom:1.2rem; color:#222; font-weight:500;"></div>
+            <div id="jobPopupBtns" style="display:flex; flex-direction:row; gap:12px; justify-content:center;"></div>
+        </div>
+    </div>
+    <div id="successPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); z-index:3100; align-items:center; justify-content:center;">
+        <div id="successPopupBox" style="background:#fff; border-radius:12px; box-shadow:0 4px 32px #0005; min-width:320px; max-width:90vw; padding:2rem 1.5rem 1.5rem 1.5rem; position:relative; border:4px solid #28a745; text-align:center;">
+            <button id="closeSuccessPopup" style="position:absolute; top:10px; right:14px; background:none; border:none; color:#888; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <div id="successPopupMsg" style="font-size:1.15rem; margin-bottom:1.2rem; color:#28a745; font-weight:600;">Application submitted successfully!</div>
+            <div id="successPopupBtns" style="display:flex; flex-direction:row; gap:12px; justify-content:center;"></div>
+        </div>
+    </div>
     <script>
+    // NOTE BUTTON/POPUP LOGIC
+    document.getElementById('noteBtn').onclick = function() {
+      document.getElementById('notePopup').style.display = 'flex';
+    };
+    document.getElementById('closeNotePopup').onclick = function() {
+      document.getElementById('notePopup').style.display = 'none';
+    };
+
     // 5 unique Unsplash backgrounds (coding, tech, abstract, vibe)
     const bgImages = [
         'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1200&q=80', // Coding VIBE (default)
@@ -205,21 +272,67 @@
         'https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1200&q=80', // Abstract blue
     ];
 
-    // Render thumbnails
+    // Render all 5 background thumbnails in the left-side selector
     const bgSelector = document.getElementById('bgSelector');
+    const smartBanner = document.getElementById('smartBanner');
+    bgSelector.innerHTML = '';
     bgImages.forEach((url, idx) => {
         const img = document.createElement('img');
         img.src = url;
         img.className = 'bg-thumb' + (idx === 0 ? ' selected' : '');
         img.title = 'Background ' + (idx + 1);
+        img.style.marginRight = '2px';
         img.onclick = function() {
             document.body.style.backgroundImage = `url('${url}')`;
             // Remove selected from all
             document.querySelectorAll('.bg-thumb').forEach(t => t.classList.remove('selected'));
             img.classList.add('selected');
+            // Show/hide smart banner for 1st background
+            if(idx === 0) {
+                smartBanner.style.display = '';
+            } else {
+                smartBanner.style.display = 'none';
+            }
         };
         bgSelector.appendChild(img);
     });
+    // Show smart banner if 1st background is selected on load
+    if(document.querySelector('.bg-thumb.selected')) {
+        smartBanner.style.display = '';
+    }
+
+    // Hide note button on Job Openings and Table pages, show on main page only
+    function setNoteBtnVisibility() {
+      var mainVisible = document.body.children[0].style.display !== 'none' && document.body.children[1].style.display !== 'none';
+      document.getElementById('noteBtn').style.display = mainVisible ? 'block' : 'none';
+    }
+    // Call after page switches
+    var origShowTablePage = window.showTablePage;
+    window.showTablePage = function() { origShowTablePage(); setNoteBtnVisibility(); };
+    var origBackBtn = document.getElementById('backBtn').onclick;
+    document.getElementById('backBtn').onclick = function() { if(origBackBtn) origBackBtn(); setNoteBtnVisibility(); };
+    var origJobOpeningsBtn = document.getElementById('jobOpeningsBtn').onclick;
+    document.getElementById('jobOpeningsBtn').onclick = function() { if(origJobOpeningsBtn) origJobOpeningsBtn(); setNoteBtnVisibility(); };
+    var origBackJobsBtn = document.getElementById('backJobsBtn').onclick;
+    document.getElementById('backJobsBtn').onclick = function() { if(origBackJobsBtn) origBackJobsBtn(); setNoteBtnVisibility(); };
+    setNoteBtnVisibility();
+
+    // Ensure banner never overlaps business card or update form (responsive)
+    function adjustSmartBanner() {
+        // On small screens, move banner up a bit
+        if(window.innerWidth < 500) {
+            smartBanner.style.top = '8px';
+            smartBanner.style.left = '8px';
+            smartBanner.style.fontSize = '1.1rem';
+        } else {
+            smartBanner.style.top = '22px';
+            smartBanner.style.left = '22px';
+            smartBanner.style.fontSize = '1.5rem';
+        }
+    }
+    window.addEventListener('resize', adjustSmartBanner);
+    adjustSmartBanner();
+
     // Ensure clicking the button shows the table page
     document.getElementById('gotoTableBtn').addEventListener('click', function() {
         showTablePage();
@@ -235,7 +348,7 @@
     </form>
 
     <!-- Table Page (hidden by default) -->
-    <div id="tablePage" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; background: url('https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=1200&q=80') center center / cover no-repeat, rgba(255,255,255,0.93); position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1000;">
+    <div id="tablePage" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; background: inherit; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1000;">
         <h2 style="margin-top:2rem; color:#fff; font-weight:bold; text-shadow:0 2px 8px #0007;">Card Details</h2>
         <table id="cardsTable" style="border-collapse:collapse; min-width:320px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); border-radius:10px; overflow:hidden;">
             <thead style="background:#0078d4; color:#fff;">
@@ -257,17 +370,512 @@
         <button id="backBtn" style="margin-top:2rem; background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer;">Back</button>
     </div>
     <input type="file" id="resumeInput" accept=".pdf,.doc,.docx" style="display:none;">
+
+    <!-- Job Openings Page (hidden by default) -->
+    <div id="jobOpeningsPage" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; background: inherit; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:2000;">
+        <h2 style="margin-top:2rem; color:#fff; font-weight:bold; text-shadow:0 2px 8px #0007;">Job Openings</h2>
+        <table id="jobsTable" style="border-collapse:collapse; min-width:320px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); border-radius:10px; overflow:hidden; margin-bottom:2rem;">
+            <thead style="background:#ff5722; color:#fff;">
+                <tr>
+                    <th style="padding:8px 12px;">Position</th>
+                    <th style="padding:8px 12px;">Location</th>
+                    <th style="padding:8px 12px;">Type</th>
+                    <th style="padding:8px 12px;">Smart Card</th>
+                    <th style="padding:8px 12px;">Apply</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <!-- Removed jobMsg, all messages now in popup only -->
+        <button id="backJobsBtn" style="margin-bottom:2rem; background:#ff5722; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer;">Back</button>
+    </div>
     <!-- <button type="button" id="continueBtn" style="margin-top:8px; background:#28a745; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Continue</button> -->
-    <button type="button" id="resumeBtn" style="margin-top:8px; background:#ffc107; color:#222; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; margin-left:10px;">Upload Resume</button>
     <script>
+    // --- POPUP LOGIC ---
+    function showJobPopup(opts) {
+        // opts: { message, color, applyBtn, job, idx, appliedJobs }
+        var popup = document.getElementById('jobPopup');
+        var box = document.getElementById('jobPopupBox');
+        var msg = document.getElementById('jobPopupMsg');
+        var btns = document.getElementById('jobPopupBtns');
+        msg.textContent = opts.message;
+        msg.style.color = opts.color || '#222';
+        box.style.borderColor = opts.color || '#0078d4';
+        btns.innerHTML = '';
+        // OK button
+        var okBtn = document.createElement('button');
+        okBtn.textContent = 'OK';
+        okBtn.style.background = '#0078d4';
+        okBtn.style.color = '#fff';
+        okBtn.style.border = 'none';
+        okBtn.style.borderRadius = '5px';
+        okBtn.style.padding = '0.5rem 1.2rem';
+        okBtn.style.cursor = 'pointer';
+        okBtn.onclick = function() { popup.style.display = 'none'; };
+        btns.appendChild(okBtn);
+        // Apply button (if eligible)
+        if (opts.applyBtn) {
+            var applyBtn = document.createElement('button');
+            applyBtn.textContent = 'Apply';
+            applyBtn.style.background = '#28a745';
+            applyBtn.style.color = '#fff';
+            applyBtn.style.border = 'none';
+            applyBtn.style.borderRadius = '5px';
+            applyBtn.style.padding = '0.5rem 1.2rem';
+            applyBtn.style.cursor = 'pointer';
+            applyBtn.onclick = function() {
+                if (opts.appliedJobs && typeof opts.idx === 'number') {
+                    opts.appliedJobs[opts.idx] = true;
+                    var btn = document.querySelector('.applyJobBtn[data-idx="' + opts.idx + '"]');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                        btn.style.pointerEvents = 'none';
+                    }
+                }
+                popup.style.display = 'none';
+                showSuccessPopup(opts.job);
+            };
+            btns.appendChild(applyBtn);
+        }
+        popup.style.display = 'flex';
+    }
+    document.getElementById('closeJobPopup').onclick = function() {
+        document.getElementById('jobPopup').style.display = 'none';
+    };
+    // --- Success Popup ---
+    function showSuccessPopup(job) {
+        var popup = document.getElementById('successPopup');
+        var btns = document.getElementById('successPopupBtns');
+        btns.innerHTML = '';
+        // Download PDF button
+        var pdfBtn = document.createElement('button');
+        pdfBtn.textContent = 'Download Job Details (PDF)';
+        pdfBtn.style.background = '#0078d4';
+        pdfBtn.style.color = '#fff';
+        pdfBtn.style.border = 'none';
+        pdfBtn.style.borderRadius = '5px';
+        pdfBtn.style.padding = '0.5rem 1.2rem';
+        pdfBtn.style.cursor = 'pointer';
+        pdfBtn.onclick = function() {
+            if (window.jsPDF) {
+                var doc = new jsPDF();
+                doc.setFontSize(16);
+                doc.text('Job Details', 14, 18);
+                doc.setFontSize(12);
+                doc.text('Position: ' + job.position, 14, 32);
+                doc.text('Location: ' + job.location, 14, 42);
+                doc.text('Type: ' + job.type, 14, 52);
+                doc.text('Required Skills: ' + job.skills.join(', '), 14, 62);
+                doc.text('Min Experience: ' + job.minExp + ' years', 14, 72);
+                doc.save('JobDetails_' + job.position.replace(/\s+/g, '_') + '.pdf');
+            } else {
+                alert('jsPDF library not loaded.');
+            }
+        };
+        btns.appendChild(pdfBtn);
+        // OK button
+        var okBtn = document.createElement('button');
+        okBtn.textContent = 'OK';
+        okBtn.style.background = '#28a745';
+        okBtn.style.color = '#fff';
+        okBtn.style.border = 'none';
+        okBtn.style.borderRadius = '5px';
+        okBtn.style.padding = '0.5rem 1.2rem';
+        okBtn.style.cursor = 'pointer';
+        okBtn.onclick = function() { popup.style.display = 'none'; };
+        btns.appendChild(okBtn);
+        popup.style.display = 'flex';
+    }
+    document.getElementById('closeSuccessPopup').onclick = function() {
+        document.getElementById('successPopup').style.display = 'none';
+    };
+    // Load jsPDF for PDF download in job popup
+    (function() {
+        var script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+        script.onload = function() { window.jsPDF = window.jspdf.jsPDF; };
+        document.head.appendChild(script);
+    })();
+
+    // Job Openings Data (static for demo)
+    // Add required skillset and experience for each job
+    const jobOpenings = [
+        { position: 'QA Engineer', location: 'Chennai, India', type: 'Full Time', applyUrl: '#', skills: ['JavaScript', 'Cypress', 'Testing'], minExp: 2 },
+        { position: 'Frontend Developer', location: 'Remote', type: 'Contract', applyUrl: '#', skills: ['JavaScript', 'React', 'HTML', 'CSS'], minExp: 3 },
+        { position: 'Automation Tester', location: 'Bangalore, India', type: 'Full Time', applyUrl: '#', skills: ['Cypress', 'Selenium', 'Automation'], minExp: 2 },
+        { position: 'DevOps Engineer', location: 'Hyderabad, India', type: 'Full Time', applyUrl: '#', skills: ['DevOps', 'CI/CD', 'AWS'], minExp: 4 },
+        { position: 'Business Analyst', location: 'Pune, India', type: 'Part Time', applyUrl: '#', skills: ['Analysis', 'Documentation', 'Communication'], minExp: 1 },
+    ];
+
+    // Show Job Openings Page
+    document.getElementById('jobOpeningsBtn').addEventListener('click', function() {
+        // Hide main content and table page if open
+        document.body.children[0].style.display = 'none'; // business card
+        document.body.children[1].style.display = 'none'; // form
+        document.getElementById('tablePage').style.display = 'none';
+        document.getElementById('jobOpeningsPage').style.display = 'flex';
+        // Hide the Job Openings button itself
+        document.getElementById('jobOpeningsBtn').style.display = 'none';
+        // ...existing code for populating jobs table and listeners...
+        var tbody = document.querySelector('#jobsTable tbody');
+        tbody.innerHTML = '';
+        jobOpenings.forEach(function(job, idx) {
+            var tr = document.createElement('tr');
+            tr.innerHTML =
+                '<td style="padding:6px 10px; border-bottom:1px solid #eee;">' + job.position + '<br><span style="font-size:0.85em;color:#888;">Skills: ' + job.skills.join(', ') + '<br>Min Exp: ' + job.minExp + ' yrs</span></td>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #eee;">' + job.location + '</td>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #eee;">' + job.type + '</td>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #eee; text-align:center;">' +
+                    '<input type="file" class="smartCardUpload" data-idx="' + idx + '" accept=".json,.txt" style="display:inline-block;">' +
+                '</td>' +
+                '<td style="padding:6px 10px; border-bottom:1px solid #eee; text-align:center;">' +
+                    '<button class="applyJobBtn" data-idx="' + idx + '" style="background:#0078d4; color:#fff; border:none; border-radius:4px; padding:4px 14px; cursor:pointer; font-weight:500; opacity:0.5; pointer-events:none;">Apply</button>' +
+                    '<button class="downloadJobPdfBtn" data-idx="' + idx + '" style="display:none; margin-left:8px; background:#ffc107; color:#222; border:none; border-radius:4px; padding:4px 10px; cursor:pointer; font-weight:500;">Download PDF</button>' +
+                '</td>';
+            tbody.appendChild(tr);
+        });
+        // ...existing code for listeners...
+        var appliedJobs = Array(jobOpenings.length).fill(false);
+        Array.from(document.getElementsByClassName('smartCardUpload')).forEach(function(input) {
+            input.onchange = function(e) {
+                var idx = parseInt(this.getAttribute('data-idx'));
+                var job = jobOpenings[idx];
+                var parentTd = this.parentElement;
+                var oldX = parentTd.querySelector('.removeSmartCardBtn');
+                if (oldX) oldX.remove();
+                if (this.files && this.files.length > 0) {
+                    var xBtn = document.createElement('button');
+                    xBtn.type = 'button';
+                    xBtn.textContent = '×';
+                    xBtn.className = 'removeSmartCardBtn';
+                    xBtn.title = 'Remove file';
+                    xBtn.style.marginLeft = '8px';
+                    xBtn.style.background = '#e53935';
+                    xBtn.style.color = '#fff';
+                    xBtn.style.border = 'none';
+                    xBtn.style.borderRadius = '50%';
+                    xBtn.style.width = '22px';
+                    xBtn.style.height = '22px';
+                    xBtn.style.fontSize = '1rem';
+                    xBtn.style.lineHeight = '1';
+                    xBtn.style.cursor = 'pointer';
+                    xBtn.style.padding = '0';
+                    xBtn.onclick = function(ev) {
+                        ev.preventDefault();
+                        input.value = '';
+                        xBtn.remove();
+                    };
+                    parentTd.appendChild(xBtn);
+                }
+        // --- POPUP LOGIC START ---
+        var cardExpText = document.getElementById('cardExperience').textContent || '';
+        var cardSkillText = document.getElementById('cardSkillset').textContent || '';
+        var userExp = parseFloat((cardExpText.match(/\d+/) || [0])[0]);
+        var userSkills = cardSkillText.replace('Skillset:', '').split(',').map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+        var jobSkills = job.skills.map(function(s) { return s.trim().toLowerCase(); });
+        var skillMatched = userSkills.some(function(skill) { return jobSkills.includes(skill); });
+        var expMatched = userExp >= job.minExp;
+        var applyBtn = document.querySelector('.applyJobBtn[data-idx="' + idx + '"]');
+        function showJobPopup(opts) {
+            var popup = document.createElement('div');
+            popup.style.position = 'fixed';
+            popup.style.top = '50%';
+            popup.style.left = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
+            popup.style.background = '#fff';
+            popup.style.color = opts.color || '#222';
+            popup.style.padding = '1.2rem 2rem';
+            popup.style.borderRadius = '10px';
+            popup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+            popup.style.fontSize = '1.1rem';
+            popup.style.fontWeight = '600';
+            popup.style.zIndex = '3000';
+            popup.style.textAlign = 'center';
+            popup.style.minWidth = '320px';
+            // X button (top right)
+            var xBtn = document.createElement('span');
+            xBtn.textContent = '×';
+            xBtn.style.position = 'absolute';
+            xBtn.style.top = '10px';
+            xBtn.style.right = '18px';
+            xBtn.style.fontSize = '1.5rem';
+            xBtn.style.cursor = 'pointer';
+            xBtn.style.color = '#888';
+            xBtn.title = 'Close';
+            xBtn.onclick = function() {
+                document.body.removeChild(popup);
+            };
+            popup.appendChild(xBtn);
+            // Message
+            var msgDiv = document.createElement('div');
+            msgDiv.textContent = opts.message;
+            msgDiv.style.color = opts.color || '#222';
+            msgDiv.style.margin = '1.5rem 0 1rem 0';
+            popup.appendChild(msgDiv);
+            // Apply button if eligible
+            if (opts.applyBtn) {
+                var applyBtn = document.createElement('button');
+                applyBtn.textContent = 'Apply';
+                applyBtn.style.background = '#0078d4';
+                applyBtn.style.color = '#fff';
+                applyBtn.style.border = 'none';
+                applyBtn.style.borderRadius = '5px';
+                applyBtn.style.padding = '0.5rem 1.2rem';
+                applyBtn.style.cursor = 'pointer';
+                applyBtn.style.fontWeight = '600';
+                applyBtn.style.margin = '0.5rem 0.5rem 0 0';
+                applyBtn.onclick = function() {
+                    // Mark as applied
+                    if (opts.appliedJobs && typeof opts.idx === 'number') {
+                        opts.appliedJobs[opts.idx] = true;
+                        // Disable outside apply button
+                        var outsideBtn = document.querySelector('.applyJobBtn[data-idx="' + opts.idx + '"]');
+                        if (outsideBtn) {
+                            outsideBtn.disabled = true;
+                            outsideBtn.style.opacity = '0.5';
+                            outsideBtn.style.pointerEvents = 'none';
+                        }
+                    }
+                    // Show success popup with download link for job details
+                    document.body.removeChild(popup);
+                    var successPopup = document.createElement('div');
+                    successPopup.style.position = 'fixed';
+                    successPopup.style.top = '50%';
+                    successPopup.style.left = '50%';
+                    successPopup.style.transform = 'translate(-50%, -50%)';
+                    successPopup.style.background = '#fff';
+                    successPopup.style.color = '#28a745';
+                    successPopup.style.padding = '1.2rem 2rem';
+                    successPopup.style.borderRadius = '10px';
+                    successPopup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+                    successPopup.style.fontSize = '1.1rem';
+                    successPopup.style.fontWeight = '600';
+                    successPopup.style.zIndex = '3000';
+                    successPopup.style.textAlign = 'center';
+                    successPopup.style.minWidth = '320px';
+                    // X button (top right)
+                    var xBtn2 = document.createElement('span');
+                    xBtn2.textContent = '×';
+                    xBtn2.style.position = 'absolute';
+                    xBtn2.style.top = '10px';
+                    xBtn2.style.right = '18px';
+                    xBtn2.style.fontSize = '1.5rem';
+                    xBtn2.style.cursor = 'pointer';
+                    xBtn2.style.color = '#888';
+                    xBtn2.title = 'Close';
+                    xBtn2.onclick = function() {
+                        document.body.removeChild(successPopup);
+                    };
+                    successPopup.appendChild(xBtn2);
+                    var msg = document.createElement('div');
+                    msg.textContent = 'Application submitted successfully!';
+                    msg.style.margin = '1.5rem 0 1rem 0';
+                    successPopup.appendChild(msg);
+                    // Download job details as PDF button (with light background)
+                    var downloadBtn = document.createElement('button');
+                    downloadBtn.textContent = 'Download Job Details (PDF)';
+                    downloadBtn.style.display = 'inline-block';
+                    downloadBtn.style.background = '#0078d4';
+                    downloadBtn.style.color = '#fff';
+                    downloadBtn.style.border = 'none';
+                    downloadBtn.style.borderRadius = '5px';
+                    downloadBtn.style.padding = '0.5rem 1.2rem';
+                    downloadBtn.style.cursor = 'pointer';
+                    downloadBtn.style.fontWeight = '600';
+                    downloadBtn.style.margin = '0.5rem 0.5rem 0 0';
+                    downloadBtn.onclick = function() {
+                        // Use jsPDF to generate PDF with light background
+                        var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
+                        doc.setFillColor(240, 248, 255); // AliceBlue
+                        doc.rect(0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight(), 'F');
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(22);
+                        doc.setTextColor(40, 120, 212);
+                        doc.text('Job Details', 40, 60);
+                        doc.setFont('helvetica', 'normal');
+                        doc.setFontSize(14);
+                        doc.setTextColor(33, 33, 33);
+                        var y = 110;
+                        var lineGap = 32;
+                        doc.text('Position: ', 40, y);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(opts.job.position, 140, y);
+                        doc.setFont('helvetica', 'normal');
+                        y += lineGap;
+                        doc.text('Location: ', 40, y);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(opts.job.location, 140, y);
+                        doc.setFont('helvetica', 'normal');
+                        y += lineGap;
+                        doc.text('Type: ', 40, y);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(opts.job.type, 140, y);
+                        doc.setFont('helvetica', 'normal');
+                        y += lineGap;
+                        doc.text('Skills: ', 40, y);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(opts.job.skills.join(', '), 140, y);
+                        doc.setFont('helvetica', 'normal');
+                        y += lineGap;
+                        doc.text('Min Experience: ', 40, y);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(opts.job.minExp + ' years', 180, y);
+                        doc.save(opts.job.position.replace(/\s+/g, '_') + '_Job_Details.pdf');
+                    };
+                    successPopup.appendChild(downloadBtn);
+                    // Load jsPDF if not already loaded
+                    (function() {
+                        if (!window.jspdf) {
+                            var script = document.createElement('script');
+                            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                            script.onload = function() {
+                                window.jspdf = window.jspdf || window.jspdf;
+                            };
+                            document.head.appendChild(script);
+                        }
+                    })();
+                    // OK button
+                    var okBtn2 = document.createElement('button');
+                    okBtn2.textContent = 'OK';
+                    okBtn2.style.background = '#e0e0e0';
+                    okBtn2.style.color = '#222';
+                    okBtn2.style.border = 'none';
+                    okBtn2.style.borderRadius = '5px';
+                    okBtn2.style.padding = '0.5rem 1.2rem';
+                    okBtn2.style.cursor = 'pointer';
+                    okBtn2.style.fontWeight = '600';
+                    okBtn2.style.margin = '0.5rem 0 0 0.5rem';
+                    okBtn2.onclick = function() {
+                        document.body.removeChild(successPopup);
+                    };
+                    successPopup.appendChild(okBtn2);
+                    document.body.appendChild(successPopup);
+                };
+                popup.appendChild(applyBtn);
+            }
+            // OK button (always)
+            var okBtn = document.createElement('button');
+            okBtn.textContent = 'OK';
+            okBtn.style.background = '#e0e0e0';
+            okBtn.style.color = '#222';
+            okBtn.style.border = 'none';
+            okBtn.style.borderRadius = '5px';
+            okBtn.style.padding = '0.5rem 1.2rem';
+            okBtn.style.cursor = 'pointer';
+            okBtn.style.fontWeight = '600';
+            okBtn.style.margin = '0.5rem 0 0 0.5rem';
+            okBtn.onclick = function() {
+                document.body.removeChild(popup);
+            };
+            popup.appendChild(okBtn);
+            document.body.appendChild(popup);
+        }
+        if (expMatched && skillMatched) {
+            showJobPopup({
+                message: 'You are eligible for the "' + job.position + '" job!',
+                color: '#28a745',
+                applyBtn: true,
+                job: job,
+                idx: idx,
+                appliedJobs: appliedJobs
+            });
+            if (!appliedJobs[idx]) {
+                applyBtn.style.opacity = '1';
+                applyBtn.style.pointerEvents = 'auto';
+                applyBtn.disabled = false;
+            } else {
+                applyBtn.style.opacity = '0.5';
+                applyBtn.style.pointerEvents = 'none';
+                applyBtn.disabled = true;
+            }
+        } else {
+            applyBtn.style.opacity = '0.5';
+            applyBtn.style.pointerEvents = 'none';
+            applyBtn.disabled = true;
+            var reason = '';
+            if (!expMatched && !skillMatched) {
+                reason = 'Required: min ' + job.minExp + ' yrs experience and at least one matching skill (' + job.skills.join(', ') + ').';
+            } else if (!expMatched) {
+                reason = 'Required: min ' + job.minExp + ' yrs experience.';
+            } else if (!skillMatched) {
+                reason = 'Required: at least one matching skill (' + job.skills.join(', ') + ').';
+            }
+            showJobPopup({
+                message: 'You are not eligible for the "' + job.position + '" job. ' + reason,
+                color: '#e53935',
+                applyBtn: false
+            });
+        }
+        // --- POPUP LOGIC END ---
+            };
+        });
+        Array.from(document.getElementsByClassName('applyJobBtn')).forEach(function(btn) {
+            btn.onclick = function() {
+                var idx = parseInt(this.getAttribute('data-idx'));
+                var job = jobOpenings[idx];
+                if (appliedJobs && appliedJobs[idx]) return;
+                appliedJobs[idx] = true;
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.pointerEvents = 'none';
+                // Show the Download PDF button for this job
+                var pdfBtn = document.querySelector('.downloadJobPdfBtn[data-idx="' + idx + '"]');
+                if (pdfBtn) pdfBtn.style.display = '';
+                // ...existing code for success popup...
+            };
+        });
+
+        // Download PDF button logic for each job row
+        Array.from(document.getElementsByClassName('downloadJobPdfBtn')).forEach(function(btn) {
+            btn.onclick = function() {
+                var idx = parseInt(this.getAttribute('data-idx'));
+                var job = jobOpenings[idx];
+                if (window.jsPDF) {
+                    var doc = new window.jsPDF();
+                    doc.setFontSize(16);
+                    doc.text('Job Details', 14, 18);
+                    doc.setFontSize(12);
+                    doc.text('Position: ' + job.position, 14, 32);
+                    doc.text('Location: ' + job.location, 14, 42);
+                    doc.text('Type: ' + job.type, 14, 52);
+                    doc.text('Required Skills: ' + job.skills.join(', '), 14, 62);
+                    doc.text('Min Experience: ' + job.minExp + ' years', 14, 72);
+                    doc.save('JobDetails_' + job.position.replace(/\s+/g, '_') + '.pdf');
+                } else {
+                    alert('jsPDF library not loaded.');
+                }
+            };
+        });
+    });
+
+    // Back button for Job Openings
+    document.getElementById('backJobsBtn').addEventListener('click', function() {
+        document.getElementById('jobOpeningsPage').style.display = 'none';
+        document.body.children[0].style.display = '';
+        document.body.children[1].style.display = '';
+        // Show the Job Openings button again
+        document.getElementById('jobOpeningsBtn').style.display = '';
+    });
     document.getElementById('updateForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        document.getElementById('cardName').textContent = document.getElementById('inputName').value;
-        document.getElementById('cardTitle').textContent = document.getElementById('inputTitle').value;
-        document.getElementById('cardContact').innerHTML =
-            document.getElementById('inputEmail').value + '<br>' +
-            document.getElementById('inputPhone').value + '<br>' +
-            document.getElementById('inputLocation').value;
+        // Only update fields that have a non-empty value in the form
+        var nameVal = document.getElementById('inputName').value;
+        if (nameVal) document.getElementById('cardName').textContent = nameVal;
+        var titleVal = document.getElementById('inputTitle').value;
+        if (titleVal) document.getElementById('cardTitle').textContent = titleVal;
+        var emailVal = document.getElementById('inputEmail').value;
+        var phoneVal = document.getElementById('inputPhone').value;
+        var locationVal = document.getElementById('inputLocation').value;
+        var contactParts = document.getElementById('cardContact').innerHTML.split('<br>');
+        if (emailVal) contactParts[0] = emailVal;
+        if (phoneVal) contactParts[1] = phoneVal;
+        if (locationVal) contactParts[2] = locationVal;
+        document.getElementById('cardContact').innerHTML = contactParts.join('<br>');
+        var skillsetVal = document.getElementById('inputSkillset').value;
+        if (skillsetVal) document.getElementById('cardSkillset').textContent = 'Skillset: ' + skillsetVal;
+        var experienceVal = document.getElementById('inputExperience').value;
+        if (experienceVal) document.getElementById('cardExperience').textContent = 'Experience: ' + experienceVal;
         var avatarInput = document.getElementById('inputAvatar');
         if (avatarInput.files && avatarInput.files[0]) {
             var reader = new FileReader();
@@ -276,46 +884,85 @@
             };
             reader.readAsDataURL(avatarInput.files[0]);
         }
-        document.getElementById('linkedin').href = document.getElementById('inputLinkedin').value;
-        document.getElementById('twitter').href = document.getElementById('inputTwitter').value;
-        document.getElementById('github').href = document.getElementById('inputGithub').value;
+        var linkedinVal = document.getElementById('inputLinkedin').value;
+        if (linkedinVal) document.getElementById('linkedin').href = linkedinVal;
+        var twitterVal = document.getElementById('inputTwitter').value;
+        if (twitterVal) document.getElementById('twitter').href = twitterVal;
+        var githubVal = document.getElementById('inputGithub').value;
+        if (githubVal) document.getElementById('github').href = githubVal;
     });
 
     // Download Card Details as TXT file
     document.getElementById('downloadCardBtn').addEventListener('click', function() {
-        // Gather all displayed business card details (from the card, not the form)
-        var name = document.getElementById('cardName').textContent;
-        var title = document.getElementById('cardTitle').textContent;
-        var contactInfo = document.getElementById('cardContact').innerHTML.split('<br>');
-        var email = contactInfo[0] ? contactInfo[0].trim() : '';
-        var phone = contactInfo[1] ? contactInfo[1].trim() : '';
-        var location = contactInfo[2] ? contactInfo[2].trim() : '';
-        var linkedin = document.getElementById('linkedin').href;
-        var twitter = document.getElementById('twitter').href;
-        var github = document.getElementById('github').href;
-        // Compose a text version of the business card
-        var cardText =
-            'Business Card Details\n' +
-            '---------------------\n' +
-            'Name: ' + name + '\n' +
-            'Title: ' + title + '\n' +
-            'Email: ' + email + '\n' +
-            'Phone: ' + phone + '\n' +
-            'Location: ' + location + '\n' +
-            'LinkedIn: ' + linkedin + '\n' +
-            'Twitter: ' + twitter + '\n' +
-            'GitHub: ' + github + '\n';
-        // Download as a .txt file
-        var blob = new Blob([cardText], { type: 'text/plain' });
-        var link = document.createElement('a');
-        link.download = 'business_card_details.txt';
-        link.href = window.URL.createObjectURL(blob);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // Download the business card as a JPEG image, including the avatar (even if cross-origin)
+        var card = document.querySelector('.business-card');
+        var avatarImg = card.querySelector('.avatar');
+        var cardResume = document.getElementById('cardResume');
+        // Temporarily replace the resume link with a visible real download URL (if present)
+        var originalResumeHTML = cardResume.innerHTML;
+        var originalResumeDisplay = cardResume.style.display;
+        var resumeInput = document.getElementById('resumeInput');
+        var resumeFile = resumeInput.files && resumeInput.files[0] ? resumeInput.files[0] : null;
+        var tempUrl = '';
+        if (resumeFile) {
+            tempUrl = URL.createObjectURL(resumeFile);
+            cardResume.innerHTML = 'Download Resume: ' + tempUrl;
+            cardResume.style.display = '';
+        }
+        // Always convert avatar to dataURL for html2canvas rendering
+        function renderCardWithAvatar() {
+            html2canvas(card, { scale: 3, backgroundColor: null, useCORS: true }).then(function(canvas) {
+                // Restore resume link after rendering
+                cardResume.innerHTML = originalResumeHTML;
+                cardResume.style.display = originalResumeDisplay;
+                var link = document.createElement('a');
+                link.download = 'business_card.jpg';
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                // Revoke temp URL
+                if (tempUrl) setTimeout(function() { URL.revokeObjectURL(tempUrl); }, 1000);
+            });
+        }
+        if (avatarImg.src && !avatarImg.src.startsWith('data:')) {
+            var img = new window.Image();
+            img.crossOrigin = 'anonymous';
+            img.src = avatarImg.src;
+            img.onload = function() {
+                try {
+                    var canvas = document.createElement('canvas');
+                    canvas.width = img.naturalWidth;
+                    canvas.height = img.naturalHeight;
+                    var ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0);
+                    var dataURL = canvas.toDataURL('image/png');
+                    var oldSrc = avatarImg.src;
+                    avatarImg.src = dataURL;
+                    setTimeout(function() {
+                        renderCardWithAvatar();
+                        setTimeout(function() { avatarImg.src = oldSrc; }, 100);
+                    }, 100);
+                } catch (e) {
+                    renderCardWithAvatar();
+                }
+            };
+            img.onerror = function() {
+                renderCardWithAvatar();
+            };
+        } else {
+            renderCardWithAvatar();
+        }
     });
 
     // Store submitted cards in an array
+    // Load html2canvas library for JPEG download
+    (function() {
+        var script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+        script.crossOrigin = 'anonymous';
+        document.head.appendChild(script);
+    })();
     var submittedCards = [];
 
     // Resume upload logic
@@ -326,13 +973,20 @@
         var file = e.target.files[0];
         var status = document.getElementById('resumeStatus');
         var removeBtn = document.getElementById('removeResumeBtn');
+        var cardResume = document.getElementById('cardResume');
         if (file) {
             status.textContent = 'Resume uploaded: ' + file.name;
             status.style.color = '#28a745';
             removeBtn.style.display = '';
+            // Show download link on business card
+            var url = URL.createObjectURL(file);
+            cardResume.innerHTML = '<a href="' + url + '" download="' + file.name + '" style="color:#0078d4; text-decoration:underline;">Download Resume</a>';
+            cardResume.style.display = '';
         } else {
             status.textContent = '';
             removeBtn.style.display = 'none';
+            cardResume.innerHTML = '';
+            cardResume.style.display = 'none';
         }
     });
 
@@ -340,9 +994,12 @@
     document.getElementById('removeResumeBtn').addEventListener('click', function() {
         var resumeInput = document.getElementById('resumeInput');
         var status = document.getElementById('resumeStatus');
+        var cardResume = document.getElementById('cardResume');
         resumeInput.value = '';
         status.textContent = '';
         this.style.display = 'none';
+        cardResume.innerHTML = '';
+        cardResume.style.display = 'none';
     });
 
     // Add button logic (replaces Continue)
