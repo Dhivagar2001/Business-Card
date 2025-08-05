@@ -197,13 +197,13 @@
     <!-- Job Openings Button -->
     <button id="jobOpeningsBtn" style="position:fixed; bottom:18px; right:18px; z-index:2100; background:#ff5722; color:#fff; border:none; border-radius:50px; padding:0.7rem 1.6rem; font-size:1rem; font-weight:600; box-shadow:0 2px 8px #0002; cursor:pointer;">Job Openings</button>
     <div class="business-card">
-        <img class="avatar" id="avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dhivagar" alt="Profile Photo">
-        <div class="name" id="cardName">Dhivagar</div>
+        <img class="avatar" id="avatar" src="https://avatars.githubusercontent.com/u/9919?s=200&v=4" alt="Business Card Avatar">
+        <div class="name" id="cardName">Dhivagar S</div>
         <div class="title" id="cardTitle">Quality Assurance</div>
         <div class="contact-info" id="cardContact">
-            Dhivagar.S.Dhivagar.S@cognizant.com<br>
+            Vibecode@Gmail.com<br>
             7023982472<br>
-            Podnicherry, India
+            Pondicherry, India
         </div>
         <div class="experience" id="cardExperience" style="margin: 0.5rem 0; color: #222; font-weight: 500;">Experience: 3 years</div>
         <div class="skillset" id="cardSkillset" style="margin: 0.5rem 0; color: #0078d4; font-weight: 500;">Skillset: JavaScript, Cypress</div>
@@ -234,10 +234,24 @@
             <button type="button" id="downloadCardBtn" style="background:#222; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Download Card</button>
             <button type="button" id="resumeBtn" style="background:#ffc107; color:#222; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Upload Resume</button>
             <button type="button" id="addCardBtn" style="background:#28a745; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Add</button>
+            <button type="button" id="cardDetailsBtn" style="background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Card Details</button>
+    <script>
+    document.getElementById('cardDetailsBtn').addEventListener('click', function() {
+        // Hide business card and update form
+        if (document.body.children[0]) document.body.children[0].style.display = 'none';
+        if (document.body.children[1]) document.body.children[1].style.display = 'none';
+        // Show table page
+        var tablePage = document.getElementById('tablePage');
+        if (tablePage) tablePage.style.display = 'flex';
+        // Ensure Job Openings button remains visible
+        var jobOpeningsBtn = document.getElementById('jobOpeningsBtn');
+        if (jobOpeningsBtn) jobOpeningsBtn.style.display = '';
+    });
+    // Inline Job Openings button logic
+    // Removed inline Job Openings button logic
+    </script>
         </div>
-        <div style="display:flex; justify-content:center; align-items:center; width:100%; margin-top:10px;">
-            <button type="button" id="gotoTableBtn" style="background:#0078d4; color:#fff; border:none; padding:0.5rem 1.2rem; border-radius:5px; cursor:pointer; min-width:120px;">Card Details</button>
-        </div>
+        <!-- Card Details button removed as requested -->
 
     <!-- POPUP DIALOGS -->
     <div id="jobPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.18); z-index:3000; align-items:center; justify-content:center;">
@@ -333,19 +347,39 @@
     window.addEventListener('resize', adjustSmartBanner);
     adjustSmartBanner();
 
-    // Ensure clicking the button shows the table page
-    document.getElementById('gotoTableBtn').addEventListener('click', function() {
-        showTablePage();
-    });
-    </script>
+    // Robustly define showTablePage to hide all other pages and show the table page
+    function showTablePage() {
+        // Hide business card and update form
+        if (document.body.children[0]) document.body.children[0].style.display = 'none';
+        if (document.body.children[1]) document.body.children[1].style.display = 'none';
+        // Hide job openings page if open
+        var jobOpeningsPage = document.getElementById('jobOpeningsPage');
+        if (jobOpeningsPage) jobOpeningsPage.style.display = 'none';
+        // Show table page
+        var tablePage = document.getElementById('tablePage');
+        if (tablePage) tablePage.style.display = 'flex';
+        // Hide Job Openings button
+        var jobOpeningsBtn = document.getElementById('jobOpeningsBtn');
+        if (jobOpeningsBtn) jobOpeningsBtn.style.display = 'none';
+    }
+    // Make globally accessible
+
+window.showTablePage = showTablePage;
+// Ensure clicking the button shows the table page
+document.getElementById('gotoTableBtn').addEventListener('click', function() {
+    showTablePage();
+});
+</script>
 
 
-    <div style="display:flex; justify-content:flex-start; align-items:center; max-width:350px; width:100%; margin:0 auto 8px auto; gap:6px;">
-        <span id="resumeStatus" style="display:block; margin-top:4px; font-size:0.82rem; color:#222; background:#fff; padding:2px 8px; border-radius:4px; box-shadow:0 1px 3px #0001; width:max-content; min-width:80px; max-width:320px;"></span>
-        <button id="removeResumeBtn" type="button" title="Remove Resume" style="display:none; margin-top:4px; background:#e53935; color:#fff; border:none; border-radius:50%; width:22px; height:22px; font-size:1rem; line-height:1; cursor:pointer; padding:0;">&times;</button>
-    </div>
+<div style="display:flex; justify-content:flex-start; align-items:center; max-width:350px; width:100%; margin:0 auto 8px auto; gap:6px;">
+    <span id="resumeStatus" style="display:block; margin-top:4px; font-size:0.82rem; color:#222; background:#fff; padding:2px 8px; border-radius:4px; box-shadow:0 1px 3px #0001; width:max-content; min-width:80px; max-width:320px;"></span>
+    <button id="removeResumeBtn" type="button" title="Remove Resume" style="display:none; margin-top:4px; background:#e53935; color:#fff; border:none; border-radius:50%; width:22px; height:22px; font-size:1rem; line-height:1; cursor:pointer; padding:0;">&times;</button>
+</div>
 
-    </form>
+</form>
+
+<!-- Removed View Card Details button as requested -->
 
     <!-- Table Page (hidden by default) -->
     <div id="tablePage" style="display:none; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; background: inherit; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1000;">
@@ -377,6 +411,7 @@
         <table id="jobsTable" style="border-collapse:collapse; min-width:320px; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.08); border-radius:10px; overflow:hidden; margin-bottom:2rem;">
             <thead style="background:#ff5722; color:#fff;">
                 <tr>
+                    <th style="padding:8px 12px;">Name</th>
                     <th style="padding:8px 12px;">Position</th>
                     <th style="padding:8px 12px;">Location</th>
                     <th style="padding:8px 12px;">Type</th>
@@ -458,16 +493,20 @@
         pdfBtn.style.padding = '0.5rem 1.2rem';
         pdfBtn.style.cursor = 'pointer';
         pdfBtn.onclick = function() {
+            var idx = jobOpenings.findIndex(function(j) { return j.position === job.position && j.location === job.location; });
+            var nameInput = document.querySelector('.jobNameInput[data-idx="' + idx + '"]');
+            var userName = nameInput ? nameInput.value.trim() : '';
             if (window.jsPDF) {
                 var doc = new jsPDF();
                 doc.setFontSize(16);
                 doc.text('Job Details', 14, 18);
                 doc.setFontSize(12);
-                doc.text('Position: ' + job.position, 14, 32);
-                doc.text('Location: ' + job.location, 14, 42);
-                doc.text('Type: ' + job.type, 14, 52);
-                doc.text('Required Skills: ' + job.skills.join(', '), 14, 62);
-                doc.text('Min Experience: ' + job.minExp + ' years', 14, 72);
+                doc.text('Name: ' + (userName || 'N/A'), 14, 26);
+                doc.text('Position: ' + job.position, 14, 38);
+                doc.text('Location: ' + job.location, 14, 48);
+                doc.text('Type: ' + job.type, 14, 58);
+                doc.text('Required Skills: ' + job.skills.join(', '), 14, 68);
+                doc.text('Min Experience: ' + job.minExp + ' years', 14, 78);
                 doc.save('JobDetails_' + job.position.replace(/\s+/g, '_') + '.pdf');
             } else {
                 alert('jsPDF library not loaded.');
@@ -521,8 +560,30 @@
         var tbody = document.querySelector('#jobsTable tbody');
         tbody.innerHTML = '';
         jobOpenings.forEach(function(job, idx) {
+        // Helper to check eligibility
+        function isEligible(job) {
+            var cardExpText = document.getElementById('cardExperience').textContent || '';
+            var cardSkillText = document.getElementById('cardSkillset').textContent || '';
+            var userExp = parseFloat((cardExpText.match(/\d+/) || [0])[0]);
+            var userSkills = cardSkillText.replace('Skillset:', '').split(',').map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+            var jobSkills = job.skills.map(function(s) { return s.trim().toLowerCase(); });
+            var skillMatched = userSkills.some(function(skill) { return jobSkills.includes(skill); });
+            var expMatched = userExp >= job.minExp;
+            return expMatched && skillMatched;
+        }
             var tr = document.createElement('tr');
-            tr.innerHTML =
+            // Editable name field (blank by default)
+            var nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.placeholder = 'Enter your name';
+            nameInput.style = 'width:120px; padding:4px 8px; border-radius:4px; border:1px solid #ccc; font-size:1em;';
+            nameInput.className = 'jobNameInput';
+            nameInput.setAttribute('data-idx', idx);
+            var nameTd = document.createElement('td');
+            nameTd.style = 'padding:6px 10px; border-bottom:1px solid #eee;';
+            nameTd.appendChild(nameInput);
+            tr.appendChild(nameTd);
+            tr.innerHTML +=
                 '<td style="padding:6px 10px; border-bottom:1px solid #eee;">' + job.position + '<br><span style="font-size:0.85em;color:#888;">Skills: ' + job.skills.join(', ') + '<br>Min Exp: ' + job.minExp + ' yrs</span></td>' +
                 '<td style="padding:6px 10px; border-bottom:1px solid #eee;">' + job.location + '</td>' +
                 '<td style="padding:6px 10px; border-bottom:1px solid #eee;">' + job.type + '</td>' +
@@ -530,7 +591,7 @@
                     '<input type="file" class="smartCardUpload" data-idx="' + idx + '" accept=".json,.txt" style="display:inline-block;">' +
                 '</td>' +
                 '<td style="padding:6px 10px; border-bottom:1px solid #eee; text-align:center;">' +
-                    '<button class="applyJobBtn" data-idx="' + idx + '" style="background:#0078d4; color:#fff; border:none; border-radius:4px; padding:4px 14px; cursor:pointer; font-weight:500; opacity:0.5; pointer-events:none;">Apply</button>' +
+                    '<button class="applyJobBtn" data-idx="' + idx + '" style="background:#0078d4; color:#fff; border:none; border-radius:4px; padding:4px 14px; cursor:pointer; font-weight:500; ' + (isEligible(job) ? 'opacity:1; pointer-events:auto;' : 'opacity:0.5; pointer-events:none;') + '">Apply</button>' +
                     '<button class="downloadJobPdfBtn" data-idx="' + idx + '" style="display:none; margin-left:8px; background:#ffc107; color:#222; border:none; border-radius:4px; padding:4px 10px; cursor:pointer; font-weight:500;">Download PDF</button>' +
                 '</td>';
             tbody.appendChild(tr);
@@ -538,6 +599,32 @@
         // ...existing code for listeners...
         var appliedJobs = Array(jobOpenings.length).fill(false);
         Array.from(document.getElementsByClassName('smartCardUpload')).forEach(function(input) {
+        // --- Enable/disable Apply button based on eligibility ---
+        function updateApplyBtn(idx) {
+            var cardExpText = document.getElementById('cardExperience').textContent || '';
+            var cardSkillText = document.getElementById('cardSkillset').textContent || '';
+            var userExp = parseFloat((cardExpText.match(/\d+/) || [0])[0]);
+            var userSkills = cardSkillText.replace('Skillset:', '').split(',').map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+            var job = jobOpenings[idx];
+            var jobSkills = job.skills.map(function(s) { return s.trim().toLowerCase(); });
+            var skillMatched = userSkills.some(function(skill) { return jobSkills.includes(skill); });
+            var expMatched = userExp >= job.minExp;
+            var applyBtn = document.querySelector('.applyJobBtn[data-idx="' + idx + '"]');
+            if (expMatched && skillMatched) {
+                applyBtn.style.opacity = '1';
+                applyBtn.style.pointerEvents = 'auto';
+                applyBtn.disabled = false;
+            } else {
+                applyBtn.style.opacity = '0.5';
+                applyBtn.style.pointerEvents = 'none';
+                applyBtn.disabled = true;
+            }
+        }
+        // Initial state for all jobs
+        for (var i = 0; i < jobOpenings.length; i++) {
+            updateApplyBtn(i);
+        }
+        // Also update on resume upload, skillset, experience change, etc. (if needed, add listeners)
             input.onchange = function(e) {
                 var idx = parseInt(this.getAttribute('data-idx'));
                 var job = jobOpenings[idx];
@@ -613,7 +700,7 @@
             msgDiv.style.color = opts.color || '#222';
             msgDiv.style.margin = '1.5rem 0 1rem 0';
             popup.appendChild(msgDiv);
-            // Apply button if eligible
+            // Apply button (always, but enabled only if eligible)
             if (opts.applyBtn) {
                 var applyBtn = document.createElement('button');
                 applyBtn.textContent = 'Apply';
@@ -625,11 +712,18 @@
                 applyBtn.style.cursor = 'pointer';
                 applyBtn.style.fontWeight = '600';
                 applyBtn.style.margin = '0.5rem 0.5rem 0 0';
+                if (isEligible(opts.job)) {
+                    applyBtn.disabled = false;
+                    applyBtn.style.opacity = '1';
+                    applyBtn.style.pointerEvents = 'auto';
+                } else {
+                    applyBtn.disabled = true;
+                    applyBtn.style.opacity = '0.5';
+                    applyBtn.style.pointerEvents = 'none';
+                }
                 applyBtn.onclick = function() {
-                    // Mark as applied
                     if (opts.appliedJobs && typeof opts.idx === 'number') {
                         opts.appliedJobs[opts.idx] = true;
-                        // Disable outside apply button
                         var outsideBtn = document.querySelector('.applyJobBtn[data-idx="' + opts.idx + '"]');
                         if (outsideBtn) {
                             outsideBtn.disabled = true;
@@ -637,7 +731,6 @@
                             outsideBtn.style.pointerEvents = 'none';
                         }
                     }
-                    // Show success popup with download link for job details
                     document.body.removeChild(popup);
                     var successPopup = document.createElement('div');
                     successPopup.style.position = 'fixed';
@@ -654,7 +747,6 @@
                     successPopup.style.zIndex = '3000';
                     successPopup.style.textAlign = 'center';
                     successPopup.style.minWidth = '320px';
-                    // X button (top right)
                     var xBtn2 = document.createElement('span');
                     xBtn2.textContent = '×';
                     xBtn2.style.position = 'absolute';
@@ -672,7 +764,6 @@
                     msg.textContent = 'Application submitted successfully!';
                     msg.style.margin = '1.5rem 0 1rem 0';
                     successPopup.appendChild(msg);
-                    // Download job details as PDF button (with light background)
                     var downloadBtn = document.createElement('button');
                     downloadBtn.textContent = 'Download Job Details (PDF)';
                     downloadBtn.style.display = 'inline-block';
@@ -685,9 +776,8 @@
                     downloadBtn.style.fontWeight = '600';
                     downloadBtn.style.margin = '0.5rem 0.5rem 0 0';
                     downloadBtn.onclick = function() {
-                        // Use jsPDF to generate PDF with light background
                         var doc = new window.jspdf.jsPDF({ unit: 'pt', format: 'a4' });
-                        doc.setFillColor(240, 248, 255); // AliceBlue
+                        doc.setFillColor(240, 248, 255);
                         doc.rect(0, 0, doc.internal.pageSize.getWidth(), doc.internal.pageSize.getHeight(), 'F');
                         doc.setFont('helvetica', 'bold');
                         doc.setFontSize(22);
@@ -724,7 +814,6 @@
                         doc.save(opts.job.position.replace(/\s+/g, '_') + '_Job_Details.pdf');
                     };
                     successPopup.appendChild(downloadBtn);
-                    // Load jsPDF if not already loaded
                     (function() {
                         if (!window.jspdf) {
                             var script = document.createElement('script');
@@ -735,7 +824,6 @@
                             document.head.appendChild(script);
                         }
                     })();
-                    // OK button
                     var okBtn2 = document.createElement('button');
                     okBtn2.textContent = 'OK';
                     okBtn2.style.background = '#e0e0e0';
@@ -831,16 +919,19 @@
             btn.onclick = function() {
                 var idx = parseInt(this.getAttribute('data-idx'));
                 var job = jobOpenings[idx];
+                var nameInput = document.querySelector('.jobNameInput[data-idx="' + idx + '"]');
+                var userName = nameInput ? nameInput.value.trim() : '';
                 if (window.jsPDF) {
                     var doc = new window.jsPDF();
                     doc.setFontSize(16);
                     doc.text('Job Details', 14, 18);
                     doc.setFontSize(12);
-                    doc.text('Position: ' + job.position, 14, 32);
-                    doc.text('Location: ' + job.location, 14, 42);
-                    doc.text('Type: ' + job.type, 14, 52);
-                    doc.text('Required Skills: ' + job.skills.join(', '), 14, 62);
-                    doc.text('Min Experience: ' + job.minExp + ' years', 14, 72);
+                    doc.text('Name: ' + (userName || 'N/A'), 14, 26);
+                    doc.text('Position: ' + job.position, 14, 38);
+                    doc.text('Location: ' + job.location, 14, 48);
+                    doc.text('Type: ' + job.type, 14, 58);
+                    doc.text('Required Skills: ' + job.skills.join(', '), 14, 68);
+                    doc.text('Min Experience: ' + job.minExp + ' years', 14, 78);
                     doc.save('JobDetails_' + job.position.replace(/\s+/g, '_') + '.pdf');
                 } else {
                     alert('jsPDF library not loaded.');
@@ -909,15 +1000,65 @@
         if (twitterVal) document.getElementById('twitter').href = twitterVal;
         var githubVal = document.getElementById('inputGithub').value;
         if (githubVal) document.getElementById('github').href = githubVal;
+
+        // Show success popup after update
+        var updatePopup = document.createElement('div');
+        updatePopup.style.position = 'fixed';
+        updatePopup.style.top = '50%';
+        updatePopup.style.left = '50%';
+        updatePopup.style.transform = 'translate(-50%, -50%)';
+        updatePopup.style.background = '#fff';
+        updatePopup.style.color = '#0078d4';
+        updatePopup.style.padding = '1.2rem 2rem';
+        updatePopup.style.borderRadius = '10px';
+        updatePopup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+        updatePopup.style.fontSize = '1.1rem';
+        updatePopup.style.fontWeight = '600';
+        updatePopup.style.zIndex = '4000';
+        updatePopup.style.textAlign = 'center';
+        updatePopup.style.minWidth = '320px';
+        // X button (top right)
+        var xBtn = document.createElement('span');
+        xBtn.textContent = '×';
+        xBtn.style.position = 'absolute';
+        xBtn.style.top = '10px';
+        xBtn.style.right = '18px';
+        xBtn.style.fontSize = '1.5rem';
+        xBtn.style.cursor = 'pointer';
+        xBtn.style.color = '#888';
+        xBtn.title = 'Close';
+        xBtn.onclick = function() {
+            document.body.removeChild(updatePopup);
+        };
+        updatePopup.appendChild(xBtn);
+        var msg = document.createElement('div');
+        msg.textContent = 'Update is successful for all fields!';
+        msg.style.margin = '1.5rem 0 1rem 0';
+        updatePopup.appendChild(msg);
+        // OK button
+        var okBtn = document.createElement('button');
+        okBtn.textContent = 'OK';
+        okBtn.style.background = '#0078d4';
+        okBtn.style.color = '#fff';
+        okBtn.style.border = 'none';
+        okBtn.style.borderRadius = '5px';
+        okBtn.style.padding = '0.5rem 1.2rem';
+        okBtn.style.cursor = 'pointer';
+        okBtn.style.fontWeight = '600';
+        okBtn.style.margin = '0.5rem 0 0 0.5rem';
+        okBtn.onclick = function() {
+            document.body.removeChild(updatePopup);
+        };
+        updatePopup.appendChild(okBtn);
+        document.body.appendChild(updatePopup);
     });
 
     // Download Card Details as TXT file
     document.getElementById('downloadCardBtn').addEventListener('click', function() {
-        // Download the business card as a JPEG image, including the avatar (even if cross-origin)
+        // ...existing code for download card...
         var card = document.querySelector('.business-card');
         var avatarImg = card.querySelector('.avatar');
         var cardResume = document.getElementById('cardResume');
-        // Temporarily replace the resume link with a visible real download URL (if present)
         var originalResumeHTML = cardResume.innerHTML;
         var originalResumeDisplay = cardResume.style.display;
         var resumeInput = document.getElementById('resumeInput');
@@ -928,10 +1069,8 @@
             cardResume.innerHTML = 'Download Resume: ' + tempUrl;
             cardResume.style.display = '';
         }
-        // Always convert avatar to dataURL for html2canvas rendering
         function renderCardWithAvatar() {
             html2canvas(card, { scale: 3, backgroundColor: null, useCORS: true }).then(function(canvas) {
-                // Restore resume link after rendering
                 cardResume.innerHTML = originalResumeHTML;
                 cardResume.style.display = originalResumeDisplay;
                 var link = document.createElement('a');
@@ -940,8 +1079,51 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-                // Revoke temp URL
                 if (tempUrl) setTimeout(function() { URL.revokeObjectURL(tempUrl); }, 1000);
+                // Show popup after download
+                var popup = document.createElement('div');
+                popup.style.position = 'fixed';
+                popup.style.top = '50%';
+                popup.style.left = '50%';
+                popup.style.transform = 'translate(-50%, -50%)';
+                popup.style.background = '#fff';
+                popup.style.color = '#0078d4';
+                popup.style.padding = '1.2rem 2rem';
+                popup.style.borderRadius = '10px';
+                popup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+                popup.style.fontSize = '1.1rem';
+                popup.style.fontWeight = '600';
+                popup.style.zIndex = '4000';
+                popup.style.textAlign = 'center';
+                popup.style.minWidth = '320px';
+                var xBtn = document.createElement('span');
+                xBtn.textContent = '×';
+                xBtn.style.position = 'absolute';
+                xBtn.style.top = '10px';
+                xBtn.style.right = '18px';
+                xBtn.style.fontSize = '1.5rem';
+                xBtn.style.cursor = 'pointer';
+                xBtn.style.color = '#888';
+                xBtn.title = 'Close';
+                xBtn.onclick = function() { document.body.removeChild(popup); };
+                popup.appendChild(xBtn);
+                var msg = document.createElement('div');
+                msg.textContent = 'Card downloaded successfully!';
+                msg.style.margin = '1.5rem 0 1rem 0';
+                popup.appendChild(msg);
+                var okBtn = document.createElement('button');
+                okBtn.textContent = 'OK';
+                okBtn.style.background = '#0078d4';
+                okBtn.style.color = '#fff';
+                okBtn.style.border = 'none';
+                okBtn.style.borderRadius = '5px';
+                okBtn.style.padding = '0.5rem 1.2rem';
+                okBtn.style.cursor = 'pointer';
+                okBtn.style.fontWeight = '600';
+                okBtn.style.margin = '0.5rem 0 0 0.5rem';
+                okBtn.onclick = function() { document.body.removeChild(popup); };
+                popup.appendChild(okBtn);
+                document.body.appendChild(popup);
             });
         }
         if (avatarImg.src && !avatarImg.src.startsWith('data:')) {
@@ -997,10 +1179,53 @@
             status.textContent = 'Resume uploaded: ' + file.name;
             status.style.color = '#28a745';
             removeBtn.style.display = '';
-            // Show download link on business card
             var url = URL.createObjectURL(file);
             cardResume.innerHTML = '<a href="' + url + '" download="' + file.name + '" style="color:#0078d4; text-decoration:underline;">Download Resume</a>';
             cardResume.style.display = '';
+            // Show popup after upload
+            var popup = document.createElement('div');
+            popup.style.position = 'fixed';
+            popup.style.top = '50%';
+            popup.style.left = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
+            popup.style.background = '#fff';
+            popup.style.color = '#28a745';
+            popup.style.padding = '1.2rem 2rem';
+            popup.style.borderRadius = '10px';
+            popup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+            popup.style.fontSize = '1.1rem';
+            popup.style.fontWeight = '600';
+            popup.style.zIndex = '4000';
+            popup.style.textAlign = 'center';
+            popup.style.minWidth = '320px';
+            var xBtn = document.createElement('span');
+            xBtn.textContent = '×';
+            xBtn.style.position = 'absolute';
+            xBtn.style.top = '10px';
+            xBtn.style.right = '18px';
+            xBtn.style.fontSize = '1.5rem';
+            xBtn.style.cursor = 'pointer';
+            xBtn.style.color = '#888';
+            xBtn.title = 'Close';
+            xBtn.onclick = function() { document.body.removeChild(popup); };
+            popup.appendChild(xBtn);
+            var msg = document.createElement('div');
+            msg.textContent = 'Resume uploaded successfully!';
+            msg.style.margin = '1.5rem 0 1rem 0';
+            popup.appendChild(msg);
+            var okBtn = document.createElement('button');
+            okBtn.textContent = 'OK';
+            okBtn.style.background = '#28a745';
+            okBtn.style.color = '#fff';
+            okBtn.style.border = 'none';
+            okBtn.style.borderRadius = '5px';
+            okBtn.style.padding = '0.5rem 1.2rem';
+            okBtn.style.cursor = 'pointer';
+            okBtn.style.fontWeight = '600';
+            okBtn.style.margin = '0.5rem 0 0 0.5rem';
+            okBtn.onclick = function() { document.body.removeChild(popup); };
+            popup.appendChild(okBtn);
+            document.body.appendChild(popup);
         } else {
             status.textContent = '';
             removeBtn.style.display = 'none';
@@ -1023,7 +1248,7 @@
 
     // Add button logic (replaces Continue)
     document.getElementById('addCardBtn').addEventListener('click', function() {
-        // Gather all displayed business card details (from the card, not the form)
+        // ...existing code for add card...
         var name = document.getElementById('cardName').textContent;
         var title = document.getElementById('cardTitle').textContent;
         var contactInfo = document.getElementById('cardContact').innerHTML.split('<br>');
@@ -1033,7 +1258,6 @@
         var linkedin = document.getElementById('linkedin').href;
         var twitter = document.getElementById('twitter').href;
         var github = document.getElementById('github').href;
-        // Get resume file (if uploaded)
         var resumeInput = document.getElementById('resumeInput');
         var resumeFile = resumeInput.files && resumeInput.files[0] ? resumeInput.files[0] : null;
         var resumeName = resumeFile ? resumeFile.name : '';
@@ -1041,10 +1265,51 @@
         if (resumeFile) {
             resumeUrl = URL.createObjectURL(resumeFile);
         }
-        // Store in array
         submittedCards.push({ name, title, email, phone, location, linkedin, twitter, github, resumeName, resumeUrl });
-        // Show table page
-        showTablePage();
+        // Show popup after add
+        var popup = document.createElement('div');
+        popup.style.position = 'fixed';
+        popup.style.top = '50%';
+        popup.style.left = '50%';
+        popup.style.transform = 'translate(-50%, -50%)';
+        popup.style.background = '#fff';
+        popup.style.color = '#28a745';
+        popup.style.padding = '1.2rem 2rem';
+        popup.style.borderRadius = '10px';
+        popup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+        popup.style.fontSize = '1.1rem';
+        popup.style.fontWeight = '600';
+        popup.style.zIndex = '4000';
+        popup.style.textAlign = 'center';
+        popup.style.minWidth = '320px';
+        var xBtn = document.createElement('span');
+        xBtn.textContent = '×';
+        xBtn.style.position = 'absolute';
+        xBtn.style.top = '10px';
+        xBtn.style.right = '18px';
+        xBtn.style.fontSize = '1.5rem';
+        xBtn.style.cursor = 'pointer';
+        xBtn.style.color = '#888';
+        xBtn.title = 'Close';
+        xBtn.onclick = function() { document.body.removeChild(popup); showTablePage(); };
+        popup.appendChild(xBtn);
+        var msg = document.createElement('div');
+        msg.textContent = 'Card added successfully!';
+        msg.style.margin = '1.5rem 0 1rem 0';
+        popup.appendChild(msg);
+        var okBtn = document.createElement('button');
+        okBtn.textContent = 'OK';
+        okBtn.style.background = '#28a745';
+        okBtn.style.color = '#fff';
+        okBtn.style.border = 'none';
+        okBtn.style.borderRadius = '5px';
+        okBtn.style.padding = '0.5rem 1.2rem';
+        okBtn.style.cursor = 'pointer';
+        okBtn.style.fontWeight = '600';
+        okBtn.style.margin = '0.5rem 0 0 0.5rem';
+        okBtn.onclick = function() { document.body.removeChild(popup); showTablePage(); };
+        popup.appendChild(okBtn);
+        document.body.appendChild(popup);
     });
 
     function showTablePage() {
@@ -1071,6 +1336,62 @@
                 '</td>' +
                 '<td style="padding:6px 10px; border-bottom:1px solid #eee;"><button class="deleteRowBtn" data-idx="' + idx + '" style="background:#e53935; color:#fff; border:none; border-radius:4px; padding:4px 10px; cursor:pointer;">Delete</button></td>';
             tbody.appendChild(tr);
+
+            // --- Validate this card against all job openings and show eligibility popup for each ---
+            var cardExp = parseFloat((card.experience || '').match(/\d+/) || [0])[0];
+            var cardSkills = (card.skillset || '').split(',').map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+            jobOpenings.forEach(function(job) {
+                var jobSkills = job.skills.map(function(s) { return s.trim().toLowerCase(); });
+                var skillMatched = cardSkills.some(function(skill) { return jobSkills.includes(skill); });
+                var expMatched = cardExp >= job.minExp;
+                var popup = document.createElement('div');
+                popup.style.position = 'fixed';
+                popup.style.top = '50%';
+                popup.style.left = '50%';
+                popup.style.transform = 'translate(-50%, -50%)';
+                popup.style.background = '#fff';
+                popup.style.color = (expMatched && skillMatched) ? '#28a745' : '#e53935';
+                popup.style.padding = '1.2rem 2rem';
+                popup.style.borderRadius = '10px';
+                popup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+                popup.style.fontSize = '1.1rem';
+                popup.style.fontWeight = '600';
+                popup.style.zIndex = '4000';
+                popup.style.textAlign = 'center';
+                popup.style.minWidth = '320px';
+                var xBtn = document.createElement('span');
+                xBtn.textContent = '×';
+                xBtn.style.position = 'absolute';
+                xBtn.style.top = '10px';
+                xBtn.style.right = '18px';
+                xBtn.style.fontSize = '1.5rem';
+                xBtn.style.cursor = 'pointer';
+                xBtn.style.color = '#888';
+                xBtn.title = 'Close';
+                xBtn.onclick = function() { document.body.removeChild(popup); };
+                popup.appendChild(xBtn);
+                var msg = document.createElement('div');
+                if (expMatched && skillMatched) {
+                    msg.textContent = 'You are eligible for: ' + job.position;
+                } else {
+                    msg.textContent = 'Not eligible for ' + job.position + '. Required: min ' + job.minExp + ' yrs experience and at least one skill (' + job.skills.join(', ') + ').';
+                }
+                msg.style.margin = '1.5rem 0 1rem 0';
+                popup.appendChild(msg);
+                var okBtn = document.createElement('button');
+                okBtn.textContent = 'OK';
+                okBtn.style.background = '#0078d4';
+                okBtn.style.color = '#fff';
+                okBtn.style.border = 'none';
+                okBtn.style.borderRadius = '5px';
+                okBtn.style.padding = '0.5rem 1.2rem';
+                okBtn.style.cursor = 'pointer';
+                okBtn.style.fontWeight = '600';
+                okBtn.style.margin = '0.5rem 0 0 0.5rem';
+                okBtn.onclick = function() { document.body.removeChild(popup); };
+                popup.appendChild(okBtn);
+                document.body.appendChild(popup);
+            });
         });
         // Add delete button listeners
         Array.from(document.getElementsByClassName('deleteRowBtn')).forEach(function(btn) {
@@ -1080,6 +1401,71 @@
                 showTablePage();
             };
         });
+        // --- Validate card against job openings and show eligibility popup ---
+        if (submittedCards.length > 0) {
+            var card = submittedCards[submittedCards.length - 1];
+            var cardExp = parseFloat((card.experience || '').match(/\d+/) || [0])[0];
+            var cardSkills = (card.skillset || '').split(',').map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
+            var eligibleJobs = [];
+            var ineligibleJobs = [];
+            jobOpenings.forEach(function(job) {
+                var jobSkills = job.skills.map(function(s) { return s.trim().toLowerCase(); });
+                var skillMatched = cardSkills.some(function(skill) { return jobSkills.includes(skill); });
+                var expMatched = cardExp >= job.minExp;
+                if (expMatched && skillMatched) {
+                    eligibleJobs.push(job.position);
+                } else {
+                    ineligibleJobs.push(job.position);
+                }
+            });
+            var popup = document.createElement('div');
+            popup.style.position = 'fixed';
+            popup.style.top = '50%';
+            popup.style.left = '50%';
+            popup.style.transform = 'translate(-50%, -50%)';
+            popup.style.background = '#fff';
+            popup.style.color = eligibleJobs.length > 0 ? '#28a745' : '#e53935';
+            popup.style.padding = '1.2rem 2rem';
+            popup.style.borderRadius = '10px';
+            popup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+            popup.style.fontSize = '1.1rem';
+            popup.style.fontWeight = '600';
+            popup.style.zIndex = '4000';
+            popup.style.textAlign = 'center';
+            popup.style.minWidth = '320px';
+            var xBtn = document.createElement('span');
+            xBtn.textContent = '×';
+            xBtn.style.position = 'absolute';
+            xBtn.style.top = '10px';
+            xBtn.style.right = '18px';
+            xBtn.style.fontSize = '1.5rem';
+            xBtn.style.cursor = 'pointer';
+            xBtn.style.color = '#888';
+            xBtn.title = 'Close';
+            xBtn.onclick = function() { document.body.removeChild(popup); };
+            popup.appendChild(xBtn);
+            var msg = document.createElement('div');
+            if (eligibleJobs.length > 0) {
+                msg.textContent = 'You are eligible for: ' + eligibleJobs.join(', ');
+            } else {
+                msg.textContent = 'Not eligible for any job openings. Please check your experience and skillset.';
+            }
+            msg.style.margin = '1.5rem 0 1rem 0';
+            popup.appendChild(msg);
+            var okBtn = document.createElement('button');
+            okBtn.textContent = 'OK';
+            okBtn.style.background = '#0078d4';
+            okBtn.style.color = '#fff';
+            okBtn.style.border = 'none';
+            okBtn.style.borderRadius = '5px';
+            okBtn.style.padding = '0.5rem 1.2rem';
+            okBtn.style.cursor = 'pointer';
+            okBtn.style.fontWeight = '600';
+            okBtn.style.margin = '0.5rem 0 0 0.5rem';
+            okBtn.onclick = function() { document.body.removeChild(popup); };
+            popup.appendChild(okBtn);
+            document.body.appendChild(popup);
+        }
     }
 
     // Back button logic
@@ -1091,3 +1477,4 @@
     </script>
 </body>
 </html>
+
