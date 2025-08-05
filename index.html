@@ -859,6 +859,27 @@
     });
     document.getElementById('updateForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        // Validation: Experience must be a number >= 0, Skillset must not be empty, and at least one skill must be present
+        var experienceVal = document.getElementById('inputExperience').value.trim();
+        var skillsetVal = document.getElementById('inputSkillset').value.trim();
+        var errors = [];
+        var expNum = parseFloat((experienceVal.match(/\d+/) || [])[0]);
+        if (!experienceVal || isNaN(expNum) || expNum < 0) {
+            errors.push('Please enter a valid experience (number of years).');
+        }
+        if (!skillsetVal) {
+            errors.push('Please enter at least one skill in the Skillset field.');
+        } else {
+            // Check for at least one skill (comma separated)
+            var skillsArr = skillsetVal.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+            if (skillsArr.length === 0) {
+                errors.push('Please enter at least one valid skill (comma separated).');
+            }
+        }
+        if (errors.length > 0) {
+            alert(errors.join('\n'));
+            return;
+        }
         // Only update fields that have a non-empty value in the form
         var nameVal = document.getElementById('inputName').value;
         if (nameVal) document.getElementById('cardName').textContent = nameVal;
@@ -872,9 +893,7 @@
         if (phoneVal) contactParts[1] = phoneVal;
         if (locationVal) contactParts[2] = locationVal;
         document.getElementById('cardContact').innerHTML = contactParts.join('<br>');
-        var skillsetVal = document.getElementById('inputSkillset').value;
         if (skillsetVal) document.getElementById('cardSkillset').textContent = 'Skillset: ' + skillsetVal;
-        var experienceVal = document.getElementById('inputExperience').value;
         if (experienceVal) document.getElementById('cardExperience').textContent = 'Experience: ' + experienceVal;
         var avatarInput = document.getElementById('inputAvatar');
         if (avatarInput.files && avatarInput.files[0]) {
