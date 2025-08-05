@@ -600,17 +600,9 @@ document.getElementById('gotoTableBtn').addEventListener('click', function() {
         var appliedJobs = Array(jobOpenings.length).fill(false);
         Array.from(document.getElementsByClassName('smartCardUpload')).forEach(function(input) {
         // --- Enable/disable Apply button based on eligibility ---
-        function updateApplyBtn(idx) {
-            var cardExpText = document.getElementById('cardExperience').textContent || '';
-            var cardSkillText = document.getElementById('cardSkillset').textContent || '';
-            var userExp = parseFloat((cardExpText.match(/\d+/) || [0])[0]);
-            var userSkills = cardSkillText.replace('Skillset:', '').split(',').map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
-            var job = jobOpenings[idx];
-            var jobSkills = job.skills.map(function(s) { return s.trim().toLowerCase(); });
-            var skillMatched = userSkills.some(function(skill) { return jobSkills.includes(skill); });
-            var expMatched = userExp >= job.minExp;
+        function updateApplyBtn(idx, eligible) {
             var applyBtn = document.querySelector('.applyJobBtn[data-idx="' + idx + '"]');
-            if (expMatched && skillMatched) {
+            if (eligible) {
                 applyBtn.style.opacity = '1';
                 applyBtn.style.pointerEvents = 'auto';
                 applyBtn.disabled = false;
@@ -620,9 +612,9 @@ document.getElementById('gotoTableBtn').addEventListener('click', function() {
                 applyBtn.disabled = true;
             }
         }
-        // Initial state for all jobs
+        // Initial state for all jobs: always disabled until popup
         for (var i = 0; i < jobOpenings.length; i++) {
-            updateApplyBtn(i);
+            updateApplyBtn(i, false);
         }
         // Also update on resume upload, skillset, experience change, etc. (if needed, add listeners)
             input.onchange = function(e) {
@@ -859,29 +851,21 @@ document.getElementById('gotoTableBtn').addEventListener('click', function() {
             popup.appendChild(okBtn);
             document.body.appendChild(popup);
         }
+        var reason = '';
         if (expMatched && skillMatched) {
             showJobPopup({
                 message: 'You are eligible for the "' + job.position + '" job!',
                 color: '#28a745',
-                applyBtn: true,
+                applyBtn: false,
                 job: job,
                 idx: idx,
                 appliedJobs: appliedJobs
             });
-            if (!appliedJobs[idx]) {
-                applyBtn.style.opacity = '1';
-                applyBtn.style.pointerEvents = 'auto';
-                applyBtn.disabled = false;
-            } else {
-                applyBtn.style.opacity = '0.5';
-                applyBtn.style.pointerEvents = 'none';
-                applyBtn.disabled = true;
-            }
+            // Enable Apply button after popup is closed
+            setTimeout(function() {
+                updateApplyBtn(idx, true);
+            }, 500);
         } else {
-            applyBtn.style.opacity = '0.5';
-            applyBtn.style.pointerEvents = 'none';
-            applyBtn.disabled = true;
-            var reason = '';
             if (!expMatched && !skillMatched) {
                 reason = 'Required: min ' + job.minExp + ' yrs experience and at least one matching skill (' + job.skills.join(', ') + ').';
             } else if (!expMatched) {
@@ -894,6 +878,7 @@ document.getElementById('gotoTableBtn').addEventListener('click', function() {
                 color: '#e53935',
                 applyBtn: false
             });
+            updateApplyBtn(idx, false);
         }
         // --- POPUP LOGIC END ---
             };
@@ -1336,62 +1321,7 @@ document.getElementById('gotoTableBtn').addEventListener('click', function() {
                 '</td>' +
                 '<td style="padding:6px 10px; border-bottom:1px solid #eee;"><button class="deleteRowBtn" data-idx="' + idx + '" style="background:#e53935; color:#fff; border:none; border-radius:4px; padding:4px 10px; cursor:pointer;">Delete</button></td>';
             tbody.appendChild(tr);
-
-            // --- Validate this card against all job openings and show eligibility popup for each ---
-            var cardExp = parseFloat((card.experience || '').match(/\d+/) || [0])[0];
-            var cardSkills = (card.skillset || '').split(',').map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
-            jobOpenings.forEach(function(job) {
-                var jobSkills = job.skills.map(function(s) { return s.trim().toLowerCase(); });
-                var skillMatched = cardSkills.some(function(skill) { return jobSkills.includes(skill); });
-                var expMatched = cardExp >= job.minExp;
-                var popup = document.createElement('div');
-                popup.style.position = 'fixed';
-                popup.style.top = '50%';
-                popup.style.left = '50%';
-                popup.style.transform = 'translate(-50%, -50%)';
-                popup.style.background = '#fff';
-                popup.style.color = (expMatched && skillMatched) ? '#28a745' : '#e53935';
-                popup.style.padding = '1.2rem 2rem';
-                popup.style.borderRadius = '10px';
-                popup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
-                popup.style.fontSize = '1.1rem';
-                popup.style.fontWeight = '600';
-                popup.style.zIndex = '4000';
-                popup.style.textAlign = 'center';
-                popup.style.minWidth = '320px';
-                var xBtn = document.createElement('span');
-                xBtn.textContent = '×';
-                xBtn.style.position = 'absolute';
-                xBtn.style.top = '10px';
-                xBtn.style.right = '18px';
-                xBtn.style.fontSize = '1.5rem';
-                xBtn.style.cursor = 'pointer';
-                xBtn.style.color = '#888';
-                xBtn.title = 'Close';
-                xBtn.onclick = function() { document.body.removeChild(popup); };
-                popup.appendChild(xBtn);
-                var msg = document.createElement('div');
-                if (expMatched && skillMatched) {
-                    msg.textContent = 'You are eligible for: ' + job.position;
-                } else {
-                    msg.textContent = 'Not eligible for ' + job.position + '. Required: min ' + job.minExp + ' yrs experience and at least one skill (' + job.skills.join(', ') + ').';
-                }
-                msg.style.margin = '1.5rem 0 1rem 0';
-                popup.appendChild(msg);
-                var okBtn = document.createElement('button');
-                okBtn.textContent = 'OK';
-                okBtn.style.background = '#0078d4';
-                okBtn.style.color = '#fff';
-                okBtn.style.border = 'none';
-                okBtn.style.borderRadius = '5px';
-                okBtn.style.padding = '0.5rem 1.2rem';
-                okBtn.style.cursor = 'pointer';
-                okBtn.style.fontWeight = '600';
-                okBtn.style.margin = '0.5rem 0 0 0.5rem';
-                okBtn.onclick = function() { document.body.removeChild(popup); };
-                popup.appendChild(okBtn);
-                document.body.appendChild(popup);
-            });
+            // No eligibility popup logic here
         });
         // Add delete button listeners
         Array.from(document.getElementsByClassName('deleteRowBtn')).forEach(function(btn) {
@@ -1401,71 +1331,6 @@ document.getElementById('gotoTableBtn').addEventListener('click', function() {
                 showTablePage();
             };
         });
-        // --- Validate card against job openings and show eligibility popup ---
-        if (submittedCards.length > 0) {
-            var card = submittedCards[submittedCards.length - 1];
-            var cardExp = parseFloat((card.experience || '').match(/\d+/) || [0])[0];
-            var cardSkills = (card.skillset || '').split(',').map(function(s) { return s.trim().toLowerCase(); }).filter(Boolean);
-            var eligibleJobs = [];
-            var ineligibleJobs = [];
-            jobOpenings.forEach(function(job) {
-                var jobSkills = job.skills.map(function(s) { return s.trim().toLowerCase(); });
-                var skillMatched = cardSkills.some(function(skill) { return jobSkills.includes(skill); });
-                var expMatched = cardExp >= job.minExp;
-                if (expMatched && skillMatched) {
-                    eligibleJobs.push(job.position);
-                } else {
-                    ineligibleJobs.push(job.position);
-                }
-            });
-            var popup = document.createElement('div');
-            popup.style.position = 'fixed';
-            popup.style.top = '50%';
-            popup.style.left = '50%';
-            popup.style.transform = 'translate(-50%, -50%)';
-            popup.style.background = '#fff';
-            popup.style.color = eligibleJobs.length > 0 ? '#28a745' : '#e53935';
-            popup.style.padding = '1.2rem 2rem';
-            popup.style.borderRadius = '10px';
-            popup.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
-            popup.style.fontSize = '1.1rem';
-            popup.style.fontWeight = '600';
-            popup.style.zIndex = '4000';
-            popup.style.textAlign = 'center';
-            popup.style.minWidth = '320px';
-            var xBtn = document.createElement('span');
-            xBtn.textContent = '×';
-            xBtn.style.position = 'absolute';
-            xBtn.style.top = '10px';
-            xBtn.style.right = '18px';
-            xBtn.style.fontSize = '1.5rem';
-            xBtn.style.cursor = 'pointer';
-            xBtn.style.color = '#888';
-            xBtn.title = 'Close';
-            xBtn.onclick = function() { document.body.removeChild(popup); };
-            popup.appendChild(xBtn);
-            var msg = document.createElement('div');
-            if (eligibleJobs.length > 0) {
-                msg.textContent = 'You are eligible for: ' + eligibleJobs.join(', ');
-            } else {
-                msg.textContent = 'Not eligible for any job openings. Please check your experience and skillset.';
-            }
-            msg.style.margin = '1.5rem 0 1rem 0';
-            popup.appendChild(msg);
-            var okBtn = document.createElement('button');
-            okBtn.textContent = 'OK';
-            okBtn.style.background = '#0078d4';
-            okBtn.style.color = '#fff';
-            okBtn.style.border = 'none';
-            okBtn.style.borderRadius = '5px';
-            okBtn.style.padding = '0.5rem 1.2rem';
-            okBtn.style.cursor = 'pointer';
-            okBtn.style.fontWeight = '600';
-            okBtn.style.margin = '0.5rem 0 0 0.5rem';
-            okBtn.onclick = function() { document.body.removeChild(popup); };
-            popup.appendChild(okBtn);
-            document.body.appendChild(popup);
-        }
     }
 
     // Back button logic
